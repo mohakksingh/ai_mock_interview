@@ -203,3 +203,5 @@ export const interviewCovers = [
   "/tiktok.png",
   "/yahoo.png",
 ];
+
+
