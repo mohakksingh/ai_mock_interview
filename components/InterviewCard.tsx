@@ -6,7 +6,7 @@ import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import DisplayTechIcons from "@/components/DisplayTechIcons";
 
-const InterviewCard = ({interviewId,userid,role,type,techstack,createdAt}:InterviewCardProps) => {
+const InterviewCard = ({interviewId,userId,role,type,techstack,createdAt}:InterviewCardProps) => {
 
     const feedback=null as Feedback | null;
     const normalizedType=/mix/gi.test(type)? 'Mixed':type;
@@ -21,14 +21,14 @@ const InterviewCard = ({interviewId,userid,role,type,techstack,createdAt}:Interv
                         <p className="badge-text">{normalizedType}</p>
                     </div>
 
-                    <Image src={getRandomInterviewCover()} alt="cover image" width={90} height={90} className="rounded-full object-fit min-h-96"/>
+                    <Image src={getRandomInterviewCover()} alt="cover image" width={90} height={90} className="rounded-full object-fit size-[90px]"/>
 
                     <h3 className="mt-5 capitalize">
                         {role} Interview
                     </h3>
                     <div className="flex flex-row gap-5 mt-3">
                         <div className="flex flex-row gap-2">
-                            <Image src='/calender.svg' alt="calender" width={22} height={22}/>
+                            <Image src='/calendar.svg' alt="calender" width={22} height={22}/>
                             <p>{formattedDate}</p>
                         </div>
                         <div className="flex flex-row gap-2 items-center">
