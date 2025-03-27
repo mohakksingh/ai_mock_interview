@@ -1,3 +1,5 @@
+"use server"
+
 import {db} from "@/firebase/admin";
 import {generateObject} from "ai";
 import {google} from "@ai-sdk/google";

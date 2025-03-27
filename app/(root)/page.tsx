@@ -17,8 +17,8 @@ const Page = async () => {
     ])
 
 
-    const hasPastInterviews=userInterviews?.length>0;
-    const hasUpcomingInterviews= latestInterviews?.length>0;
+    const hasPastInterviews=userInterviews?.length!>0;
+    const hasUpcomingInterviews= latestInterviews?.length!>0;
     return (
         <>
             <section className="card-cta">
