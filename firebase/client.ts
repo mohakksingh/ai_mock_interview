@@ -5,13 +5,13 @@ import {getFirestore} from "firebase/firestore";
 
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDcvSyP7h-_iZtnkzL6d-uJzHpTAxyYHEc",
-    authDomain: process.env.FIREBASE_PROJECT_AUTHDOMAIN,
-    projectId: process.env.FIREBASE_PROJECT_PROJECTID,
-    storageBucket: process.env.FIREBASE_PROJECT_STORAGEBUCKET,
-    messagingSenderId: process.env.FIREBASE_PROJECT_MESSAGINGSENDERID,
-    appId: process.env.FIREBASE_PROJECT_APPID,
-    measurementId: process.env.FIREBASE_PROJECT_MEASUREMENTID
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_APIKEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_AUTHDOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_PROJECTID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_STORAGEBUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_MESSAGINGSENDERID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_APPID,
+    measurementId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_MEASUREMENTID
 };
 const app =!getApps().length ? initializeApp(firebaseConfig) :getApp();
 
