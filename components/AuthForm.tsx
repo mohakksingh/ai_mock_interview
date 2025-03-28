@@ -14,7 +14,7 @@ import Link from "next/link";
 import {toast} from "sonner";
 import FormField from "@/components/FormField";
 import {useRouter} from "next/navigation";
-import {createUserWithEmailAndPassword, signInWithEmailAndPassword} from "firebase/auth";
+import {createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword} from "firebase/auth";
 import {auth} from "@/firebase/client";
 import {signIn, signUp} from "@/lib/actions/auth.action";
 
@@ -48,7 +48,14 @@ const AuthForm = ({type}:{type:FormType}) => {
 
                 const {name,email,password}=values;
 
+                if (!name || !email || !password) {
+                    toast.error("Please fill all the fields");
+                    return;
+                }
+
                 const userCredentials=await createUserWithEmailAndPassword(auth,email,password);
+
+
 
                 const result=await signUp({
                     uid:userCredentials.user.uid,
@@ -60,7 +67,10 @@ const AuthForm = ({type}:{type:FormType}) => {
                     toast.error(result?.message);
                     return;
                 }
-                toast.success("Account created successfully.Please sign in");
+
+                await sendEmailVerification(userCredentials.user);
+
+                toast.success("Account created successfully.Please check Your email to verify your account");
                 router.push('/sign-in')
             }else{
                 const {email,password}=values;
@@ -74,6 +84,13 @@ const AuthForm = ({type}:{type:FormType}) => {
                     return;
                 }
 
+                if(!userCredential.user.emailVerified){
+                    toast.error("Please verify your email before signing in");
+                    await sendEmailVerification(userCredential.user)
+                    toast.info("A new verification email has been sent");
+                    return;
+                }
+
                 await signIn({
                     email,
                     idToken
@@ -84,8 +101,24 @@ const AuthForm = ({type}:{type:FormType}) => {
 
             }
         }catch (error){
-            console.log(error);
-            toast.error(`There was an error: ${error}`)
+            console.error("Auth error:", error);
+            switch (error.code) {
+                case 'auth/email-already-in-use':
+                    toast.error("This email is already in use");
+                    break;
+                case 'auth/invalid-email':
+                    toast.error("Invalid email format");
+                    break;
+                case 'auth/weak-password':
+                    toast.error("Password is too weak");
+                    break;
+                case 'auth/user-not-found':
+                case 'auth/wrong-password':
+                    toast.error("Invalid email or password");
+                    break;
+                default:
+                    toast.error(`There was an error: ${error.message || error}`);
+            }
         }
     }
 
