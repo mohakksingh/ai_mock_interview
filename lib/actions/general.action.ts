@@ -111,7 +111,7 @@ export async function getFeedbackByInterviewId(params:GetFeedbackByInterviewIdPa
 
     const feedback= await db
         .collection('feedback')
-        .where('interviewerId','==',interviewId)
+        .where('interviewId','==',interviewId)
         .where('userId','==',userId)
         .limit(1)
         .get()
@@ -124,6 +124,5 @@ export async function getFeedbackByInterviewId(params:GetFeedbackByInterviewIdPa
         id:feedbackDoc.id,
         ...feedbackDoc.data()
     } as Feedback
-
 
 }

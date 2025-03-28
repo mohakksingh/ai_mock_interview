@@ -16,10 +16,12 @@ const Page = async ({params}:RouteParams) => {
     const interview=await getInterviewById(id);
     if (!interview) redirect('/');
     
-    const feedback=await getFeedbackByInterviewId({
+    const feedback=await getFeedbacwkByInterviewId({
         interviewId:id,
         userId:user?.id!
     })
+
+    console.log(feedback,"feedback")
 
 
     return (
