@@ -14,8 +14,13 @@ import Link from "next/link";
 import {toast} from "sonner";
 import FormField from "@/components/FormField";
 import {useRouter} from "next/navigation";
-import {createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword} from "firebase/auth";
-import {auth} from "@/firebase/client";
+import {
+    createUserWithEmailAndPassword,
+    sendEmailVerification,
+    signInWithEmailAndPassword,
+    signInWithPopup
+} from "firebase/auth";
+import {auth, provider} from "@/firebase/client";
 import {signIn, signUp} from "@/lib/actions/auth.action";
 
 
@@ -122,6 +127,61 @@ const AuthForm = ({type}:{type:FormType}) => {
         }
     }
 
+    async function handleGoogleSignIn (){
+        try{
+            if(type==='sign-up'){
+                const userCredentials=await signInWithPopup(auth,provider);
+                const idToken=await userCredentials.user.getIdToken();
+
+                if(!idToken){
+                    toast.error("Google sign-in failed");
+                    return;
+                }
+
+                const email=userCredentials.user.email;
+                if (!email){
+                    toast.error('No email found in google account');
+                    return;
+                }
+
+                const result=await signUp({
+                    uid:userCredentials.user.uid,
+                    name:userCredentials.user.displayName!,
+                    email,
+
+                })
+                if (!result?.success){
+                    toast.error(result?.message);
+                    return;
+                }
+                toast.success("Signed up successfully, Please signIn");
+                router.push('/sign-in')
+            }else{
+                const userCredentials=await signInWithPopup(auth,provider);
+
+                const idToken=await userCredentials.user.getIdToken();
+
+                if(!idToken){
+                    toast.error("Google sign-in failed");
+                    return;
+                }
+
+                const email=userCredentials.user.email;
+                if (!email){
+                    toast.error('No email found in google account');
+                    return;
+                }
+
+                await signIn({ email, idToken });
+                toast.success("Signed in with Google successfully");
+                router.push('/');
+            }
+        }catch (e){
+            console.error("Google sign-in error:", e);
+            toast.error("Google sign-in failed");
+        }
+    }
+
     const isSignIn= type==='sign-in';
     return (
         <div className="card-border lg:min-w-[566px]">
@@ -142,6 +202,18 @@ const AuthForm = ({type}:{type:FormType}) => {
                     <Button className="btn" type="submit">{isSignIn ? 'Sign in' : 'Create an Account'}</Button>
                 </form>
             </Form>
+
+                {isSignIn?  (
+                    <Button className="btn rounded-lg" onClick={handleGoogleSignIn}>
+                <Image src="/google-icon.svg" alt="google" height={24} width={24} />
+                Sign In With Google
+            </Button>
+                    ):(
+                    <Button className="btn rounded-lg" onClick={handleGoogleSignIn}>
+                <Image src="/google-icon.svg" alt="google" height={24} width={24} />
+                Sign Up With Google
+            </Button>
+                    )}
                 <p className="text-center"
                    >
                     {isSignIn? 'No account yet?' : 'Have an account already?'}
